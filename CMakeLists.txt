@@ -1,6 +1,5 @@
 cmake_minimum_required(VERSION 3.16)
 project(bitloop VERSION 1.0.0 LANGUAGES C CXX)
-include(FetchContent)
 
 add_executable(my_app main.cpp)
 
@@ -12,8 +11,7 @@ set(IMGUI_SOURCES
     ${IMGUI_DIR}/imgui_tables.cpp
     ${IMGUI_DIR}/imgui_widgets.cpp
     ${IMGUI_DIR}/backends/imgui_impl_sdl3.cpp
-    ${IMGUI_DIR}/backends/imgui_impl_opengl3.cpp
-)
+    ${IMGUI_DIR}/backends/imgui_impl_opengl3.cpp)
 
 target_sources(my_app PRIVATE ${IMGUI_SOURCES})
 target_include_directories(my_app PRIVATE
@@ -22,7 +20,6 @@ target_include_directories(my_app PRIVATE
 )
 
 target_compile_definitions(my_app PRIVATE IMGUI_IMPL_OPENGL_ES3=1)
-target_compile_features(my_app PUBLIC cxx_std_23)
 
 target_link_options(my_app PRIVATE
     "-sUSE_SDL=3"
@@ -31,5 +28,3 @@ target_link_options(my_app PRIVATE
     "--shell-file=${CMAKE_SOURCE_DIR}/shell.html")
 
 set(CMAKE_EXECUTABLE_SUFFIX ".html")
-
-include_directories($ENV{EMSDK}/upstream/emscripten/cache/sysroot/include)

@@ -28,7 +28,6 @@ void gui_loop()
     // ======== Prepare frame ========
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplSDL3_NewFrame();
-    ImGui::GetIO().DisplayFramebufferScale = ImVec2(1.0f, 1.0f);
     ImGui::NewFrame();
 
     // ======== Draw window ========
