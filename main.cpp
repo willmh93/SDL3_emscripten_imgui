@@ -23,24 +23,11 @@ void gui_loop()
     while (SDL_PollEvent(&e))
     {
         ImGui_ImplSDL3_ProcessEvent(&e);
-
-        //switch (e.type)
-        //{
-        //    case SDL_EVENT_QUIT: shared_sync.quit(); break;
-        //    case SDL_EVENT_WINDOW_RESIZED:
-        //    case SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED:
-        //        Platform()->resized();
-        //        break;
-        //    default: ProjectWorker::instance()->queueEvent(e); break;
-        //}
     }
-
-    //Platform()->update();
 
     // ======== Prepare frame ========
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplSDL3_NewFrame();
-    //ImGui::GetIO().DisplaySize = ImVec2((float)Platform()->fbo_width(), (float)Platform()->fbo_height());
     ImGui::GetIO().DisplayFramebufferScale = ImVec2(1.0f, 1.0f);
     ImGui::NewFrame();
 
