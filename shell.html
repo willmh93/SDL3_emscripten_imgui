@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>my_app</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    
+    <style>
+        html, body {
+            margin: 0;
+            background-color: black
+        }
+
+        canvas, #content {
+            position: absolute;
+            display: block;
+            top: 0px;
+            left: 0px;
+            width: 100dvw;
+            height: 100dvh;
+            image-rendering: pixelated;
+            image-rendering: optimizeSpeed;
+            -ms-interpolation-mode: nearest-neighbor;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="content">
+        <canvas id="canvas" oncontextmenu="event.preventDefault()"></canvas>
+    </div>
+
+    <script type="text/javascript">
+
+        const canvas = document.getElementById('canvas');
+        var Module = { canvas };
+
+        function resizeCanvas() {
+            const container = document.getElementById('content');
+            const canvas = document.getElementById('canvas');
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+        window.addEventListener('DOMContentLoaded', resizeCanvas);
+
+    </script>
+
+    {{{ SCRIPT }}}
+
+</body>
+</html>
