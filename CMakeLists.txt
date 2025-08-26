@@ -25,6 +25,7 @@ target_link_options(my_app PRIVATE
     "-sUSE_SDL=3"
     "-sUSE_WEBGL2=1"
     "-sFULL_ES3=1"
+    "-sEXPORTED_RUNTIME_METHODS=[ccall,UTF8ToString,stringToUTF8,lengthBytesUTF8]"
     "--shell-file=${CMAKE_SOURCE_DIR}/shell.html")
 
 set(CMAKE_EXECUTABLE_SUFFIX ".html")

@@ -14,7 +14,40 @@
 #include "backends/imgui_impl_sdl3.h"
 #include "backends/imgui_impl_opengl3.h"
 
+#include "emscripten_browser_clipboard.h"
+
 SDL_Window* window = nullptr;
+
+std::string clipboard_content;
+bool simulatedImguiPaste = false;
+
+char const* get_content_for_imgui(ImGuiContext*)
+{
+    std::cout << "ImGui requested clipboard content, returning " << clipboard_content.c_str() << std::endl;
+    return clipboard_content.c_str();
+}
+
+void set_content_from_imgui(ImGuiContext*, char const* text)
+{
+    /// Callback for imgui, to set clipboard content
+    clipboard_content = text;
+	
+	// send clipboard data to the browser
+    emscripten_browser_clipboard::copy(clipboard_content); 
+}
+
+void clipboard_paste_callback(std::string&& paste_data, void* callback_data)
+{
+    std::cout << "Copied clipboard data: " << paste_data.c_str() << std::endl;
+	
+    // Set internal clipboard content
+    clipboard_content = std::move(paste_data);
+
+    // Simulate Ctrl+V keypress for ImGui
+    ImGui::GetIO().AddKeyEvent(ImGuiKey_ModCtrl, true);
+    ImGui::GetIO().AddKeyEvent(ImGuiKey_V, true);
+    simulatedImguiPaste = true;
+}
 
 void gui_loop()
 {
@@ -41,6 +74,13 @@ void gui_loop()
     glClear(GL_COLOR_BUFFER_BIT);
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
     SDL_GL_SwapWindow(window);
+
+    // Release simulated paste keys
+	if (simulatedImguiPaste) {
+		simulatedImguiPaste = false;
+		ImGui::GetIO().AddKeyEvent(ImGuiKey_ModCtrl, false);
+		ImGui::GetIO().AddKeyEvent(ImGuiKey_V, false);
+	}
 }
 
 int main()
@@ -79,6 +119,23 @@ int main()
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
 	ImGui_ImplSDL3_InitForOpenGL(window, gl_context);
+
+	// Set paste callback
+	emscripten_browser_clipboard::paste(clipboard_paste_callback);
+
+    // Set clipboard callbacks for ImGui
+	ImGuiPlatformIO& platform_io = ImGui::GetPlatformIO();
+	platform_io.Platform_GetClipboardTextFn = get_content_for_imgui;
+	platform_io.Platform_SetClipboardTextFn = set_content_from_imgui;
+
+	// Only stop propagation for Ctrl-V
+	EM_ASM({
+	    window.addEventListener('keydown', function(event) {
+	        if (event.ctrlKey && event.key == 'v')
+	            event.stopImmediatePropagation();
+	    }, true);
+	});
+
 	ImGui_ImplOpenGL3_Init();
 
 
